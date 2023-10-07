@@ -1,0 +1,15 @@
+.{
+    .name = "zwschat",
+    .version = "0.0.1",
+
+    .dependencies = .{
+        .http = .{
+            .url = "https://github.com/zigster64/http.zig/archive/refs/heads/master.tar.gz",
+            .hash = "1220304c177483b73776af162e589c050a54695bd10cf9c7ab913d9c3a5cae728fe3",
+        },
+        .ws = .{
+            .url = "https://github.com/zigster64/websocket.zig/archive/refs/heads/master.tar.gz",
+            .hash = "1220bf8e20e4fdaec3ffb8ce4b51efd95a1acc0a8d76e1f0e06e622f82ac8fb7b404",
+        }
+    },
+}
