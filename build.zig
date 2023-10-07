@@ -23,6 +23,8 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    exe.addModule("httpz", b.dependency("http", .{}).module("httpz"));
+    exe.addModule("websocket", b.dependency("websocket", .{}).module("websocket"));
 
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default

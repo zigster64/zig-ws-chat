@@ -1,24 +1,33 @@
 const std = @import("std");
+const httpz = @import("httpz");
+const wss = @import("websocket_server.zig");
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
-
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
-
-    try bw.flush(); // don't forget to flush!
+    var wst = try std.Thread.spawn(.{}, wss.run, .{});
+    wst.detach();
+    try webserver();
 }
 
-test "simple test" {
-    var list = std.ArrayList(i32).init(std.testing.allocator);
-    defer list.deinit(); // try commenting this out and see if zig detects the memory leak!
-    try list.append(42);
-    try std.testing.expectEqual(@as(i32, 42), list.pop());
+fn webserver() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    const allocator = gpa.allocator();
+
+    var server = try httpz.Server().init(allocator, .{ .address = "0.0.0.0", .port = 8080 });
+    var router = server.router();
+
+    server.notFound(indexHTML);
+    router.get("/api/user/:id", getUser);
+
+    // start the server in the current thread, blocking.
+    std.log.info("Running server on port 8080", .{});
+    try server.listen();
+}
+
+fn indexHTML(req: *httpz.Request, res: *httpz.Response) !void {
+    _ = req;
+    res.body = @embedFile("html/index.html");
+}
+
+fn getUser(req: *httpz.Request, res: *httpz.Response) !void {
+    try res.json(.{ .id = req.param("id").?, .name = "Teg" }, .{});
 }

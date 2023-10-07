@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Zig Websocket HTMX Chat</title>
+    <meta name="app-version" version="0.0.1">
+    <meta date="2023-OCT-07">
+
+    <script src="https://unpkg.com/htmx.org@1.9.6"
+        integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous">
+        </script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: powderblue;
+            font-family: 'Caveat', cursive;
+        }
+
+        .chatinput {
+            background-color: wheat;
+            font-size: 18px;
+            color: #12353b;
+        }
+
+        .chatzone {
+            background-color: #1e5962;
+            font-size: 16px;
+            color: white;
+        }
+
+        .chatbanner {
+            color: #246a75;
+        }
+    </style>
+</head>
+
+<!-- Whole app body subscribes to the websocket -->
+
+<body hx-ext="ws" ws-connect="ws://localhost:8081/talk">
+    <h1 class="chatbanner">Chat World</h1>
+    <div id="chat" class="chatzone"> </div>
+    <form id="chat_form" ws-send>
+        >> <input class="chatinput" name="chat_message" _="on htmx:afterRequest set my value to ''">
+    </form>
+</body>
+
+
+</html>
